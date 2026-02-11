@@ -1,6 +1,7 @@
 env:
   FAIL_WARMUP: "${FAIL_WARMUP}"
   FAIL_PROCESS: "${FAIL_PROCESS}"
+  TIMEOUT: "${TIMEOUT}"
 before-command: |
   #!/bin/bash
   set -e
@@ -25,5 +26,13 @@ service-previews:
       fi
 
       # Start the Python HTTP server on port 2205
-      python3 -m http.server 2205 --bind 0.0.0.0
+      python3 -m http.server 2205 --bind 0.0.0.0 &
+      SERVER_PID=$!
+
+      if [ -n "$TIMEOUT" ]; then
+        echo "Server will be killed after ${TIMEOUT} seconds"
+        sleep "$TIMEOUT" && kill $SERVER_PID 2>/dev/null &
+      fi
+
+      wait $SERVER_PID
     preview-port: 2205
