@@ -1,0 +1,29 @@
+env:
+  FAIL_WARMUP: "${FAIL_WARMUP}"
+  FAIL_PROCESS: "${FAIL_PROCESS}"
+before-command: |
+  #!/bin/bash
+  set -e
+
+  if [ "$FAIL_WARMUP" = "1" ]; then
+    exit 1
+  fi
+
+  # No dependencies to install - uses built-in Python http.server module
+  echo "Preparation complete - no dependencies needed"
+preview-port: 2205
+service-previews:
+  - id: python-server
+    title: Python HTTP Server
+    description: Starts a simple Python HTTP server
+    command: |
+      #!/bin/bash
+      set -e
+
+      if [ "$FAIL_PROCESS" = "1" ]; then
+        exit 1
+      fi
+
+      # Start the Python HTTP server on port 2205
+      python3 -m http.server 2205 --bind 0.0.0.0
+    preview-port: 2205
