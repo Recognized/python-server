@@ -2,6 +2,7 @@ env:
   FAIL_WARMUP: "${FAIL_WARMUP}"
   FAIL_PROCESS: "${FAIL_PROCESS}"
   TIMEOUT: "${TIMEOUT}"
+  ERROR_CODE: "${ERROR_CODE}"
 before-command: |
   #!/bin/bash
   set -e
@@ -12,7 +13,7 @@ before-command: |
 
   # No dependencies to install - uses built-in Python http.server module
   echo "Preparation complete - no dependencies needed"
-preview-port: 2205
+preview-port: 38917
 service-previews:
   - id: python-server
     title: Python HTTP Server
@@ -25,8 +26,8 @@ service-previews:
         exit 1
       fi
 
-      # Start the Python HTTP server on port 2205
-      python3 -m http.server 2205 --bind 0.0.0.0 &
+      # Start the Python HTTP server on port 38917
+      python3 server.py &
       SERVER_PID=$!
 
       if [ -n "$TIMEOUT" ]; then
@@ -35,4 +36,4 @@ service-previews:
       fi
 
       wait $SERVER_PID
-    preview-port: 2205
+    preview-port: 38917
